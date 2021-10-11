@@ -4,6 +4,7 @@ const EmployeeObj = require('./employee')
 const EngineerObj= require('./engineer')
 const InternObj = require('./intern')
 const ManagerObj = require('./manager')
+const { profile } = require('console')
 
 
 //if role === manager ,generate officenumber
@@ -65,7 +66,7 @@ inquirer
 ])
  
 .then(answers =>{
-  const {name, id, email, role} = answers
+  const {name, id, email, role,} = answers
   console.log(role)
 
   
@@ -86,51 +87,78 @@ inquirer
     .prompt([
       {
         type:'input',
-        name: 'rolequestion',
+        name: 'roleQuestion',
         message: employeeQuestion
       }
     ])
 
     .then(answers => {
-      const {rolequestion} = answers
-      console.log(name, id, email, role,rolequestion)
-    })
+      const {roleQuestion} = answers
+      let roleAnswer = answers.roleQuestion.toLowerCase()
+      console.log(roleQuestion)
+      
+      // console.log(answers)
+      console.log(name, id, email, role,roleAnswer)
 
-//     })
-//     console.log(managerQuestions )
-// //   var engineerQuestions =
-  // inquirer 
-  //   .prompt([
-  //     {
-  //       type:'input',
-  //       name: 'github',
-  //       message :'What is employee Github Username?'
-  //     }
+      let generateChoice 
 
-//       ])
-// .then(answers => {
-//   const {github} =answers
-//   console.log(name, id, email, role,github )
-//     })
-//     console.log(engineerQuestions)
-
-//   var internQuestions =
-//   inquirer 
-//     .prompt([
-//       {
-//         type:'input',
-//         name: 'school',
-//         message :'Which school intern is attending?'
-//       }
-// ])
-// .then(answers => {
-//   const {school} =answers
-//   console.log(name, id, email, role, school)
-// })
-// console.log(internQuestions)
+      if(role.toLowerCase() === 'manager'){
+        generateChoice =`Office number :${roleAnswer}`
+        
+      }
     
+      if(role.toLowerCase() === 'engineer'){
+        generateChoice = `GitHub: ${roleAnswer}`
+      }
+      if(role.toLowerCase() === 'intern'){
+        generateChoice = `School: ${roleAnswer}`
 
+      }
+      console.log(generateChoice )
 
+      let teamGenerate = `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Team Profile Generate</title>
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/5d99d13882.js" crossorigin="anonymous"></script>
+      </head>
+      
+      <body>
+       <header class="bg-red-500 py-5">
+         <h1 class="text-center text-white text-lg">My Team</h1>
+       </header>
+      
+      <section class="m-5 p-5"><div id="employee" class="md:flex">
+         
+        <div id="manager" class="flex-1 m-4">
+          <div id ="employee-header" class="flex-1 bg-blue-500 text-white text-base p-3">
+              <h2>${employee.name}</h2>
+              <h2><i class="fas fa-mug-hot"></i> ${role}</h2>
+          </div>
+          <div id="employee-body" class="p-3 bg-gray-200 py-7 px-5">
+            <div class="flex flex-col bg-white">
+              <div class=" border border-gray-300 p-2" >ID: ${id}</div>
+              <div class=" border border-gray-300 p-2" >Email:<a href="mailto: ${email}">${email}</a></div>
+              <div class=" border border-gray-300 p-2" >${generateChoice}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+      
+      </body>
+      </html>
+      `
+  fs.writeFile('index.html',teamGenerate, (err)=>{
+    console.log(err)
+    console.log('Generate team profile...')
+  })
 }) 
+})
+
 .catch()
 
