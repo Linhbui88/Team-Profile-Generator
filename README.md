@@ -44,34 +44,27 @@ When you're ready to run the application, from the root folder, type the below i
 node index
 ```
 
-Once the application runs, it will generate an index.html file in the "dist" folder. If you already have an index.html file in that folder, it will first prompt you to overwrite it or not.
-
 ## Demo
 
-Click the image below for a video demonstration of the application and the generated index.html file at the end:
+Click the link below for a video demonstration of the application and the generated index.html file at the end: 
 
-[![Team Profile Generator Demo](./assets/images/demoscreenshot.jpg?raw=true)]
+[Demo how to run the app](https://watch.screencastify.com/v/1jKfMYTHCrZBXpGJJqUb)
 
 
 
 ## Deployed application link
+https://github.com/Linhbui88/Team-Profile-Generator/ <br/>
 
-https://github.com/malloryfaria/team-profile-generator <br />
+https://linhbui88.github.io/Team-Profile-Generator/ <br />
 
 ## Languages
 
-JavaScript, Bootstrap, Google Fonts, Material Icons, HTML, Node, Inquirer, Jest <br />
+JavaScript, Tailwind, FontAwesome, HTML, Node, Inquirer, <br />
 
 ## Screenshot
 
-What the command line interface looks like:
-
-![Team Profile Generator Command Line](./assets/images/screenshot.jpg?raw=true) <br /> 
-
-
-
 What the index.html file looks like once complete:
-![Sample Index.HTML](./assets/images/screenshot2.jpg?raw=true) <br /> 
+![Sample Index.HTML](./assets/team-profile-generate.png) <br /> 
 
 ## License
 
@@ -86,5 +79,5 @@ If you'd like to contact me, feel free to reach out using the Questions section 
 If you have any questions about the project, contact me at: 
 linhbui.dev@gmail.com <br />
 Check out the rest of my work at: 
-[malloryfaria](https://github.com/malloryfaria/) <br />
+[linhbui88](https://github.com/Linhbui88) <br />
 © 2021 GitHub, Inc.
