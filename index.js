@@ -1,164 +1,164 @@
 const inquirer = require('inquirer')
 const fs= require('fs')
-const EmployeeObj = require('./employee')
-const EngineerObj= require('./engineer')
-const InternObj = require('./intern')
-const ManagerObj = require('./manager')
-const { profile } = require('console')
+const Engineer = require('./classes/engineer')
+const Intern = require('./classes/intern')
+const Manager = require('./classes/manager')
 
 
-//if role === manager ,generate officenumber
-//if role=== engineer ,generate githubuerbame
-//if role=== intern, generate school
+async function main() {
+  const managerAnswers = await inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'managerName',
+      message: 'What is manager name?'
+    },
+    {
+      type: 'input',
+      name: 'managerEmployeeId',
+      message: 'What is manager employee ID?'
+    },
+    {
+      type: 'input',
+      name: 'managerEmail',
+      message: 'What is manager employee email?'
+    },
+    {
+      type: 'input',
+      name: 'managerOfficeNumber',
+      message: 'What is manager office number?'
+    },
+  ])
 
 
-// var employeeQuestions =[]
-// employeeChoices.forEach((choice) =>{
-//   employeeQuestions.push(choice.question)
-//   })
+  const { managerName, managerEmployeeId, managerEmail, managerOfficeNumber } = managerAnswers
+  const manager = new Manager(managerName, managerEmployeeId, managerEmail, managerOfficeNumber)
 
-//   console.log(employeeRoles)
-//   console.log(employeeQuestions)
-
-var employeeChoices =[
-  {name: 'Manager',
-  question:'What is employee office number?',
-  },
-
-  {name: 'Engineer',
-  question:'What is employee Github Username?'
-  },
-
-  {name: 'Intern',
-  question:'Which school intern is attending?'
-  },
-] 
-
-var employeeRoles = []
-employeeChoices.forEach((choice) =>{
+  const employees = [manager] 
   
-  employeeRoles.push(choice.name)
-})
 
-inquirer
-.prompt([
-  {
-    type: 'input',
-    name: 'name',
-    message: 'What is employee name?'
-  },
-  {
-    type: 'input',
-    name: 'id',
-    message: 'What is employee ID?'
-  },
-  {
-    type: 'input',
-    name: 'email',
-    message: 'What is employee email?'
-  },
-  {
-    type: 'list',
-    name: 'role',
-    message: 'What is employee role',
-    choices: employeeRoles,
-  },
-])
- 
-.then(answers =>{
-  const {name, id, email, role,} = answers
-  console.log(role)
-
-  
-  let employeeQuestion 
-    employeeChoices.forEach((choice) =>{
-      
-
-      if(role === choice.name) {
-        
-        employeeQuestion= choice.question
-      }
-    })
-
-
- 
-
-  inquirer 
-    .prompt([
+  let addOrFinish
+  do {
+    const answer = await inquirer.prompt([
       {
-        type:'input',
-        name: 'roleQuestion',
-        message: employeeQuestion
+        type: 'list',
+        name: 'addOrFinish',
+        message: 'What would you like to do?',
+        choices: [
+          'Add an engineer',
+          'Add an intern',
+          'Finish building my team'
+        ]
       }
     ])
-
-    .then(answers => {
-      const {roleQuestion} = answers
-      let roleAnswer = answers.roleQuestion.toLowerCase()
-      console.log(roleQuestion)
-      
-      // console.log(answers)
-      console.log(name, id, email, role,roleAnswer)
-
-      let generateChoice 
-
-      if(role.toLowerCase() === 'manager'){
-        generateChoice =`Office number :${roleAnswer}`
-        
-      }
+    addOrFinish = answer.addOrFinish
     
-      if(role.toLowerCase() === 'engineer'){
-        generateChoice = `GitHub: ${roleAnswer}`
+    const employeeQuestions = [
+      {
+        type: 'input',
+        name: 'employeeName',
+        message: 'What is employee name?'
+      },
+      {
+        type: 'input',
+        name: 'employeeId',
+        message: 'What is employee ID?'
+      },
+      {
+        type: 'input',
+        name: 'employeeEmail',
+        message: 'What is employee email?'
       }
-      if(role.toLowerCase() === 'intern'){
-        generateChoice = `School: ${roleAnswer}`
+    ]
 
-      }
-      console.log(generateChoice )
+    if (addOrFinish === "Add an engineer") {
+      employeeQuestions.push({
+        type: 'input',
+        name: 'engineerGitHub',
+        message: 'What is github username?'
+      })
+    } else if (addOrFinish === "Add an intern") {
+      employeeQuestions.push({
+        type: 'input',
+        name: 'internSchool',
+        message: 'What is school?'
+      })
+    }
 
-      let teamGenerate = `<!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Team Profile Generate</title>
-        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-        <script src="https://kit.fontawesome.com/5d99d13882.js" crossorigin="anonymous"></script>
-      </head>
+    if (addOrFinish !== 'Finish building my team') {
+      const employeeAnswers = await inquirer.prompt(employeeQuestions)
+
+      const { employeeName, employeeId, employeeEmail } = employeeAnswers
+        let employee
+        if (addOrFinish === "Add an engineer") {
+          employee = new Engineer(employeeName, employeeId, employeeEmail, employeeAnswers.engineerGitHub)
+        } else if (addOrFinish === "Add an intern") {
+          employee = new Intern(employeeName, employeeId, employeeEmail, employeeAnswers.internSchool)
+        }
+        employees.push(employee)
+    }
+  } while (addOrFinish !== 'Finish building my team')
+  
+
+  // GENERATE HTML  
+  let generateHTMLTemplate =`<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile Generate</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/5d99d13882.js" crossorigin="anonymous"></script>
+  </head>
+  
+  <body>
+   <header class="bg-red-500 py-5">
+     <h1 class="text-center text-white text-lg">My Team</h1>
+   </header>
+   <section class="m-5 p-5 md:flex">
+   
+  `
+  employees.forEach(employee =>{
+    let employeeGenerate =
+`<div id="employee" class="flex-1">
       
-      <body>
-       <header class="bg-red-500 py-5">
-         <h1 class="text-center text-white text-lg">My Team</h1>
-       </header>
-      
-      <section class="m-5 p-5"><div id="employee" class="md:flex">
-         
-        <div id="manager" class="flex-1 m-4">
-          <div id ="employee-header" class="flex-1 bg-blue-500 text-white text-base p-3">
-              <h2>${employee.name}</h2>
-              <h2><i class="fas fa-mug-hot"></i> ${role}</h2>
-          </div>
-          <div id="employee-body" class="p-3 bg-gray-200 py-7 px-5">
-            <div class="flex flex-col bg-white">
-              <div class=" border border-gray-300 p-2" >ID: ${id}</div>
-              <div class=" border border-gray-300 p-2" >Email:<a href="mailto: ${email}">${email}</a></div>
-              <div class=" border border-gray-300 p-2" >${generateChoice}</div>
-            </div>
-          </div>
-        </div>
+  <div class="m-4">
+    <div id ="employee-header" class="flex-1 bg-blue-500 text-white text-base p-3">
+        <h2>${employee.name}</h2>
+        <h2><i class="fas ${employee.getIcon()}"></i> ${employee.getRole()}</h2>
+    </div>
+    <div id="employee-body" class="p-3 bg-gray-200 py-7 px-5">
+      <div class="flex flex-col bg-white">
+        <div class=" border border-gray-300 p-2" >ID: ${employee.id}</div>
+        <div class=" border border-gray-300 p-2" >Email:<a href="mailto:${employee.email}">${employee.email}</a></div>
+        <div class=" border border-gray-300 p-2" >`
+
+        if (employee instanceof Manager) {
+          employeeGenerate += `Office number : ${employee.officeNumber}`
+
+        }else if(employee instanceof Engineer) {
+          employeeGenerate += `GitHub : ${employee.getGithub()}`
+        }else if(employee instanceof Intern) {
+          employeeGenerate += `School : ${employee.getSchool()}`
+        }
+
+        employeeGenerate += `</div>
       </div>
-      </section>
-      
-      </body>
-      </html>
-      `
-  fs.writeFile('index.html',teamGenerate, (err)=>{
-    console.log(err)
-    console.log('Generate team profile...')
+    </div>
+  </div>
+</div>
+ `
+ generateHTMLTemplate += employeeGenerate
+    
   })
-}) 
-})
+  generateHTMLTemplate+= `</section>
+      
+  </body>
+  </html>
+  `
 
-.catch()
+  fs.writeFile('index.html',generateHTMLTemplate, error => console.log(error))
+}
 
+main()
